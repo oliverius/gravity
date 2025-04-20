@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 
 class ManualFrameSelection:
-    def __init__(self, video_path: str, rotate_video: bool, scale: int, export_video_path:str = None):
+    def __init__(self, video_path: str, rotate_video: bool, scale: int, output_video_path:str = None):
         self.video_path = video_path
         self.rotate_video = rotate_video
         self.scale = scale
-        self.export_video_path = export_video_path
+        self.export_video_path = output_video_path
     
     @staticmethod
     def get_red_colour_mask_values() -> tuple:
@@ -92,7 +92,7 @@ class ManualFrameSelection:
         frame_idx = 0
         start_frame = None
         end_frame = None
-        is_recording = False
+        output_video = None
         
         while cap.isOpened():
             frame = self.get_frame(cap)
@@ -106,11 +106,10 @@ class ManualFrameSelection:
             if self.export_video_path is not None and frame_idx == 0:
                 height, width = composite_frame.shape[:2]
                 fourcc = cv2.VideoWriter.fourcc('m', 'p', '4', 'v')
-                out = cv2.VideoWriter(self.export_video_path, fourcc, 30.0, (width, height))
-                is_recording = True
+                output_video = cv2.VideoWriter(self.export_video_path, fourcc, 30.0, (width, height))
 
-            if is_recording:
-                out.write(composite_frame)
+            if output_video:
+                output_video.write(composite_frame)
         
             key = cv2.waitKey(0) & 0xFF
             if key == ord('q'):
@@ -125,6 +124,6 @@ class ManualFrameSelection:
             frame_idx += 1
 
         cap.release()
-        if is_recording:
-            out.release() # This has to be done after cap.release()
+        if output_video:
+            output_video.release() # This has to be done after cap.release()
         cv2.destroyAllWindows()
