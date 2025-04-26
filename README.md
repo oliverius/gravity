@@ -1,0 +1,1 @@
+https://simpleonedev.substack.com/p/calculate-the-gravity-constant-with
