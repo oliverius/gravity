@@ -13,6 +13,8 @@ def get_trajectory_in_pixels(
     frame_idx     = 0
     relative_idx  = 0  # Used for timing
 
+    min_contour_area = 50 # px
+
     positions_px  = []
     times         = []
 
@@ -35,7 +37,7 @@ def get_trajectory_in_pixels(
 
         if contours:
             largest = max(contours, key=cv2.contourArea)
-            if cv2.contourArea(largest) > 50:
+            if cv2.contourArea(largest) > min_contour_area:
                 M = cv2.moments(largest)
                 if M['m00'] != 0:
                     cy = int(M['m01'] / M['m00'])  # Vertical center
